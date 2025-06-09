@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState, useRef } from 'react';
-import { ExternalLink, ChevronDown } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronRight } from 'lucide-react';
 
 const Landing = () => {
   const [volume, setVolume] = useState(20);
@@ -21,6 +20,7 @@ const Landing = () => {
   ];
   
   const descontos = { "Flex": 0, "6m": 0.05, "12m": 0.10 };
+  const warmupCosts = { "Flex": 1200, "6m": 600, "12m": 0 };
   const fx = 6.0;
   const ipFee = 55;
   const ganhoPp = 15;
@@ -34,6 +34,7 @@ const Landing = () => {
   const excedCost = exced * plan.tarifa;
   const ips = Math.ceil(emails / 90e6);
   const ipCost = ips * ipFee;
+  const warmupCost = warmupCosts[modalidade as keyof typeof warmupCosts];
   const total = piso + excedCost + ipCost;
   const anual = total * 12;
   const extraInbox = emails * ganhoPp / 100;
@@ -53,6 +54,22 @@ const Landing = () => {
 
   const formatNumber = (value: number) => {
     return (value / 1e6).toFixed(1);
+  };
+
+  const getWarmupText = () => {
+    switch (modalidade) {
+      case "12m": return "Warm-up GRÁTIS incluído";
+      case "6m": return "Warm-up 50% desconto";
+      case "Flex": return "Warm-up adicional $1.200";
+      default: return "";
+    }
+  };
+
+  const scrollToNextSection = (currentIndex: number) => {
+    const nextSection = sectionsRef.current[currentIndex + 1];
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Intersection Observer for animations
@@ -84,18 +101,28 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-white font-['Inter'] relative">
+      {/* Progress indicators */}
+      <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-40 space-y-2">
+        {[0, 1, 2, 3, 4, 5].map((index) => (
+          <div
+            key={index}
+            className="w-2 h-2 rounded-full bg-gray-300 transition-all duration-300"
+          />
+        ))}
+      </div>
+
       {/* Section 1: Choque de Realidade */}
       <section 
         ref={(el) => (sectionsRef.current[0] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out relative"
       >
         <div className="max-w-2xl text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-8 leading-tight">
-            Seus e-mails estão <span className="text-red-600">morrendo no spam.</span>
+            Seus e-mails estão <span className="text-red-600">morrendo antes de chegar</span> na caixa de entrada.
           </h1>
           <p className="text-xl text-gray-600 mb-12">E levando sua receita junto.</p>
           
-          {/* Comparison bars - clean and minimal */}
+          {/* Updated comparison bars */}
           <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
             <div className="space-y-6">
               <div>
@@ -111,25 +138,33 @@ const Landing = () => {
               <div>
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-gray-700 font-medium">IP dedicado</span>
-                  <span className="text-green-600 font-bold text-lg">95%</span>
+                  <span className="text-green-600 font-bold text-lg">90%+</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-sm h-3">
-                  <div className="bg-green-500 h-3 rounded-sm w-[95%]"></div>
+                  <div className="bg-green-500 h-3 rounded-sm w-[90%]"></div>
                 </div>
               </div>
             </div>
             
             <p className="text-center text-gray-800 mt-8 font-semibold">
-              Cada e-mail no spam = receita perdida para sempre.
+              Cada e-mail que não chega na caixa de entrada, é menos dinheiro para o seu bolso!
             </p>
           </div>
         </div>
+
+        {/* Navigation arrow */}
+        <button
+          onClick={() => scrollToNextSection(0)}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5 rotate-90" />
+        </button>
       </section>
 
       {/* Section 2: Volume → Plano */}
       <section 
         ref={(el) => (sectionsRef.current[1] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out relative"
       >
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">
@@ -159,17 +194,25 @@ const Landing = () => {
           </div>
 
           <div className="text-center">
-            <div className="inline-block bg-gray-900 text-white px-6 py-3 rounded-lg text-xl font-semibold">
-              Plano {plan.nome}
+            <div className="inline-block bg-gray-900 text-white px-6 py-3 rounded-lg">
+              <div className="text-xl font-semibold">Plano {plan.nome}</div>
+              <div className="text-sm text-gray-300 mt-1">{getWarmupText()}</div>
             </div>
           </div>
         </div>
+
+        <button
+          onClick={() => scrollToNextSection(1)}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5 rotate-90" />
+        </button>
       </section>
 
       {/* Section 3: Preço Real */}
       <section 
         ref={(el) => (sectionsRef.current[2] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out relative"
       >
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
@@ -180,9 +223,14 @@ const Landing = () => {
             <div className="bg-gray-50 rounded-lg p-6">
               <p className="text-sm text-gray-600 mb-2">Investimento mensal:</p>
               <p className="text-4xl font-bold text-gray-900">{formatCurrency(total)}</p>
+              {warmupCost > 0 && (
+                <p className="text-sm text-orange-600 mt-2">
+                  + {formatCurrency(warmupCost)} warm-up (única vez)
+                </p>
+              )}
               <p className="text-sm text-gray-500 mt-2">
-                {modalidade === "12m" && "Anual -10% aplicado"}
-                {modalidade === "6m" && "Semestral -5% aplicado"}
+                {modalidade === "12m" && "Anual -10% • Warm-up GRÁTIS"}
+                {modalidade === "6m" && "Semestral -5% • Warm-up 50% desc."}
                 {modalidade === "Flex" && "Modalidade flex"}
               </p>
             </div>
@@ -191,16 +239,23 @@ const Landing = () => {
               onClick={() => setShowModalidadeModal(true)}
               className="text-gray-700 underline hover:text-gray-900 transition-colors"
             >
-              Ver outros prazos
+              Ver outros prazos e economias
             </button>
           </div>
         </div>
+
+        <button
+          onClick={() => scrollToNextSection(2)}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5 rotate-90" />
+        </button>
       </section>
 
       {/* Section 4: ROI */}
       <section 
         ref={(el) => (sectionsRef.current[3] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out relative"
       >
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
@@ -243,57 +298,136 @@ const Landing = () => {
             </div>
           </div>
         </div>
+
+        <button
+          onClick={() => scrollToNextSection(3)}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5 rotate-90" />
+        </button>
       </section>
 
-      {/* Section 5: Sem Risco */}
+      {/* NEW Section 5: Garantias */}
       <section 
         ref={(el) => (sectionsRef.current[4] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out pb-24"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out relative"
       >
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-            Sem risco. Sem desperdício.
+            Garantias que protegem seu investimento
           </h2>
           
           <div className="space-y-3 mb-8">
             <div className="border border-gray-200 rounded-lg">
               <button
-                onClick={() => toggleAccordion('credito')}
+                onClick={() => toggleAccordion('creditos')}
                 className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="font-semibold text-gray-800">Não usou? Vira crédito válido por 9 meses</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'credito' ? 'rotate-180' : ''}`} />
+                <span className="font-semibold text-gray-800">Sistema de créditos: zero desperdício</span>
+                <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'creditos' ? 'rotate-180' : ''}`} />
               </button>
-              {expandedAccordion === 'credito' && (
+              {expandedAccordion === 'creditos' && (
                 <div className="p-4 pt-0 text-gray-600 border-t border-gray-100">
-                  Disparou menos que o piso? Todo valor vira crédito. Zero desperdício.
+                  <p className="mb-2">Disparou menos que o piso? Todo valor vira crédito automático:</p>
+                  <ul className="text-sm space-y-1 ml-4">
+                    <li>• <strong>Flex:</strong> créditos válidos por 3 meses</li>
+                    <li>• <strong>Semestral:</strong> créditos válidos por 6 meses</li>
+                    <li>• <strong>Anual:</strong> créditos válidos por 9 meses</li>
+                  </ul>
                 </div>
               )}
             </div>
 
             <div className="border border-gray-200 rounded-lg">
               <button
-                onClick={() => toggleAccordion('kickstart')}
+                onClick={() => toggleAccordion('warmup')}
                 className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="font-semibold text-gray-800">Nossa equipe prepara seu IP para alta performance</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'kickstart' ? 'rotate-180' : ''}`} />
+                <span className="font-semibold text-gray-800">Warm-up profissional incluso</span>
+                <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'warmup' ? 'rotate-180' : ''}`} />
               </button>
-              {expandedAccordion === 'kickstart' && (
+              {expandedAccordion === 'warmup' && (
                 <div className="p-4 pt-0 text-gray-600 border-t border-gray-100">
-                  Configuramos DNS, aquecemos com 50k envios. Seu IP chega pronto para entregar.
+                  <p className="mb-2">Nossa equipe prepara seu IP para máxima entregabilidade:</p>
+                  <ul className="text-sm space-y-1 ml-4">
+                    <li>• <strong>Anual:</strong> warm-up 100% gratuito (economia de $1.200)</li>
+                    <li>• <strong>Semestral:</strong> warm-up com 50% desconto ($600)</li>
+                    <li>• <strong>Flex:</strong> warm-up opcional por $1.200</li>
+                  </ul>
+                  <p className="text-sm mt-2">Inclui: configuração DNS, aquecimento gradual, monitoramento 24/7</p>
+                </div>
+              )}
+            </div>
+
+            <div className="border border-gray-200 rounded-lg">
+              <button
+                onClick={() => toggleAccordion('saida')}
+                className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors"
+              >
+                <span className="font-semibold text-gray-800">Política de saída transparente</span>
+                <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'saida' ? 'rotate-180' : ''}`} />
+              </button>
+              {expandedAccordion === 'saida' && (
+                <div className="p-4 pt-0 text-gray-600 border-t border-gray-100">
+                  <p className="mb-2">Sem multas abusivas ou armadilhas:</p>
+                  <ul className="text-sm space-y-1 ml-4">
+                    <li>• <strong>Flex:</strong> cancelamento com 30 dias de aviso</li>
+                    <li>• <strong>Outros planos:</strong> multa limitada ao desconto recebido</li>
+                    <li>• Créditos sempre reembolsados proporcionalmente</li>
+                    <li>• Migração assistida dos dados quando solicitada</li>
+                  </ul>
                 </div>
               )}
             </div>
           </div>
 
           <p className="text-center text-gray-600">
-            <span className="font-semibold text-gray-900">Zero surpresas. Zero desperdício.</span>
+            <span className="font-semibold text-gray-900">Investimento protegido. Resultados garantidos.</span>
+          </p>
+        </div>
+
+        <button
+          onClick={() => scrollToNextSection(4)}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <ChevronRight className="w-5 h-5 rotate-90" />
+        </button>
+      </section>
+
+      {/* Section 6: Sem Risco (previously section 5) */}
+      <section 
+        ref={(el) => (sectionsRef.current[5] = el)}
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out pb-24"
+      >
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Comece hoje. Resultados imediatos.
+          </h2>
+          
+          <div className="space-y-4 mb-8">
+            <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+              <span className="text-gray-800">Setup em 24h após confirmação do DNS</span>
+            </div>
+            
+            <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">↗</div>
+              <span className="text-gray-800">+15 pontos percentuais na inbox desde a semana 1</span>
+            </div>
+            
+            <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg">
+              <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">$</div>
+              <span className="text-gray-800">ROI positivo já no primeiro mês</span>
+            </div>
+          </div>
+
+          <p className="text-center text-gray-600">
+            <span className="font-semibold text-gray-900">Pare de perder dinheiro. Comece a ganhar mais.</span>
           </p>
         </div>
       </section>
 
-      {/* CTA Fixo */}
+      {/* Updated CTA */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
         <div className="container mx-auto max-w-lg">
           <button
@@ -302,11 +436,12 @@ const Landing = () => {
           >
             <ExternalLink className="w-5 h-5" />
             Preciso do meu IP dedicado · {formatCurrency(total)}/mês
+            {warmupCost === 0 && <span className="text-green-400 ml-2">+ Warm-up GRÁTIS</span>}
           </button>
         </div>
       </div>
 
-      {/* Modal de Modalidade */}
+      {/* Updated Modal de Modalidade */}
       {showModalidadeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-8 max-w-md w-full">
@@ -314,11 +449,15 @@ const Landing = () => {
             
             <div className="space-y-3">
               {[
-                { value: "12m", label: "Anual -10%", desc: "Melhor desconto" },
-                { value: "6m", label: "Semestral -5%", desc: "Desconto médio" },
-                { value: "Flex", label: "Flex (mensal)", desc: "Sem compromisso" }
+                { value: "12m", label: "Anual -10%", desc: "Warm-up GRÁTIS (economia $1.200)", highlight: true },
+                { value: "6m", label: "Semestral -5%", desc: "Warm-up 50% desconto ($600)", highlight: false },
+                { value: "Flex", label: "Flex (mensal)", desc: "Warm-up opcional $1.200", highlight: false }
               ].map((option) => (
-                <label key={option.value} className="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-50 border border-gray-200">
+                <label key={option.value} className={`flex items-center cursor-pointer p-3 rounded-lg border-2 transition-colors ${
+                  option.highlight 
+                    ? 'border-green-300 bg-green-50 hover:bg-green-100' 
+                    : 'border-gray-200 hover:bg-gray-50'
+                } ${modalidade === option.value ? 'border-blue-500 bg-blue-50' : ''}`}>
                   <input
                     type="radio"
                     name="modalidade"
@@ -328,7 +467,10 @@ const Landing = () => {
                     className="mr-3"
                   />
                   <div>
-                    <span className="font-semibold text-gray-800">{option.label}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-800">{option.label}</span>
+                      {option.highlight && <span className="text-xs bg-green-600 text-white px-2 py-1 rounded">RECOMENDADO</span>}
+                    </div>
                     <p className="text-sm text-gray-500">{option.desc}</p>
                   </div>
                 </label>
