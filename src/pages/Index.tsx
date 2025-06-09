@@ -1,9 +1,24 @@
 
 import PricingCalculator from "@/components/PricingCalculator";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">EverInbox Calculator</h1>
+          <Button 
+            onClick={() => navigate('/landing')} 
+            variant="outline"
+          >
+            Ver Landing Storytelling
+          </Button>
+        </div>
+      </div>
       <PricingCalculator />
     </div>
   );
