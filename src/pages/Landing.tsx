@@ -37,14 +37,18 @@ const Landing = () => {
   const total = piso + excedCost + ipCost;
   const anual = total * 12;
   const extraInbox = emails * ganhoPp / 100;
-  const receitaExtra = extraInbox * 0.03 * cpc; // 3% CTR
+  const receitaExtra = extraInbox * 0.03 * cpc;
   const roi = receitaExtra / total;
+  
+  // Financial loss calculation
+  const emailsPerdidos = emails * 0.15; // 15% lost to spam
+  const perdaFinanceira = emailsPerdidos * 0.03 * cpc;
 
   const formatCurrency = (value: number) => {
     if (moeda === "BRL") {
-      return `R$ ${(value * fx).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      return `R$ ${(value * fx).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
     }
-    return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
   const formatNumber = (value: number) => {
@@ -58,11 +62,11 @@ const Landing = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-fade-in');
-            entry.target.classList.remove('opacity-0', 'translate-y-16');
+            entry.target.classList.remove('opacity-0', 'translate-y-8');
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.6 }
     );
 
     sectionsRef.current.forEach((section) => {
@@ -79,58 +83,61 @@ const Landing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2FF] font-['Inter'] relative">
-      {/* Section 1: Choque de Realidade - Hero com gráfico */}
+    <div className="min-h-screen bg-white font-['Inter'] relative">
+      {/* Section 1: Choque de Realidade */}
       <section 
         ref={(el) => (sectionsRef.current[0] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-16 transition-all duration-600 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <h1 className="text-6xl font-bold text-[#1E40FF] text-center mb-6 leading-tight">
-          Quantos % dos seus e-mails <span className="underline decoration-[#1E40FF]">morrem no spam?</span>
-        </h1>
-        
-        {/* Mini gráfico de barras comparativo */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-md w-full mt-8">
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Pool compartilhado</span>
-                <span className="text-red-500 font-bold">80%</span>
+        <div className="max-w-2xl text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-8 leading-tight">
+            Seus e-mails estão <span className="text-red-600">morrendo no spam.</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-12">E levando sua receita junto.</p>
+          
+          {/* Comparison bars - clean and minimal */}
+          <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
+            <div className="space-y-6">
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-gray-700 font-medium">Pool compartilhado</span>
+                  <span className="text-red-600 font-bold text-lg">80%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-sm h-3">
+                  <div className="bg-red-500 h-3 rounded-sm w-[80%]"></div>
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-4">
-                <div className="bg-red-500 h-4 rounded-full w-[80%]"></div>
+              
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-gray-700 font-medium">IP dedicado</span>
+                  <span className="text-green-600 font-bold text-lg">95%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-sm h-3">
+                  <div className="bg-green-500 h-3 rounded-sm w-[95%]"></div>
+                </div>
               </div>
             </div>
             
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">IP dedicado</span>
-                <span className="text-green-500 font-bold">95%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-4">
-                <div className="bg-green-500 h-4 rounded-full w-[95%]"></div>
-              </div>
-            </div>
+            <p className="text-center text-gray-800 mt-8 font-semibold">
+              Cada e-mail no spam = receita perdida para sempre.
+            </p>
           </div>
-          
-          <p className="text-center text-gray-600 mt-6 text-lg">
-            <span className="text-[#1E40FF] font-bold">Cada ponto perdido é dinheiro que não volta.</span>
-          </p>
         </div>
       </section>
 
       {/* Section 2: Volume → Plano */}
       <section 
         ref={(el) => (sectionsRef.current[1] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-16 transition-all duration-600 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-lg w-full">
-          <h2 className="text-3xl font-bold text-[#1E40FF] text-center mb-8">
-            Seu volume → seu plano
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">
+            Quanto dinheiro você está deixando na mesa?
           </h2>
+          <p className="text-center text-gray-600 mb-8">Arraste para descobrir.</p>
           
-          <div className="mb-6">
-            <p className="text-center text-gray-600 mb-4">Arraste para ver onde você se encaixa.</p>
+          <div className="mb-8">
             <input
               type="range"
               min="5"
@@ -139,18 +146,20 @@ const Landing = () => {
               onChange={(e) => setVolume(Number(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               style={{
-                background: `linear-gradient(to right, #1E40FF 0%, #1E40FF ${((volume - 5) / (120 - 5)) * 100}%, #e5e7eb ${((volume - 5) / (120 - 5)) * 100}%, #e5e7eb 100%)`
+                background: `linear-gradient(to right, #374151 0%, #374151 ${((volume - 5) / (120 - 5)) * 100}%, #e5e7eb ${((volume - 5) / (120 - 5)) * 100}%, #e5e7eb 100%)`
               }}
             />
-            <div className="text-center mt-4">
-              <span className="text-4xl font-bold text-[#1E40FF]">{volume}M</span>
-              <p className="text-sm text-gray-500 mt-1">milhões de e-mails/mês</p>
+            <div className="text-center mt-6">
+              <span className="text-4xl font-bold text-gray-900">{volume}M</span>
+              <p className="text-sm text-gray-500 mt-1">e-mails/mês</p>
+              <p className="text-lg text-red-600 font-semibold mt-4">
+                Perda mensal: {formatCurrency(perdaFinanceira)}
+              </p>
             </div>
           </div>
 
-          {/* Badge do plano com destaque */}
           <div className="text-center">
-            <div className="inline-block bg-gradient-to-r from-[#1E40FF] to-blue-600 text-white px-8 py-4 rounded-full text-2xl font-bold shadow-lg transform transition-all duration-300 hover:scale-105 animate-pulse">
+            <div className="inline-block bg-gray-900 text-white px-6 py-3 rounded-lg text-xl font-semibold">
               Plano {plan.nome}
             </div>
           </div>
@@ -160,23 +169,17 @@ const Landing = () => {
       {/* Section 3: Preço Real */}
       <section 
         ref={(el) => (sectionsRef.current[2] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-16 transition-all duration-600 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-lg w-full">
-          <h2 className="text-3xl font-bold text-[#1E40FF] text-center mb-8">
-            Quanto custa de verdade
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Investimento para recuperar sua receita
           </h2>
           
           <div className="text-center space-y-6">
-            <div>
-              <p className="text-sm text-gray-600 mb-2">Tarifa por e-mail:</p>
-              <p className="text-2xl font-bold text-[#1E40FF]">{formatCurrency(plan.tarifa)}</p>
-            </div>
-
-            <div className="bg-[#EEF2FF] rounded-xl p-6">
-              <p className="text-sm text-gray-600 mb-2">Seu investimento fixo para manter IP dedicado:</p>
-              <p className="text-4xl font-bold text-[#1E40FF]">{formatCurrency(total)}</p>
-              <p className="text-lg text-gray-700">/mês</p>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <p className="text-sm text-gray-600 mb-2">Investimento mensal:</p>
+              <p className="text-4xl font-bold text-gray-900">{formatCurrency(total)}</p>
               <p className="text-sm text-gray-500 mt-2">
                 {modalidade === "12m" && "Anual -10% aplicado"}
                 {modalidade === "6m" && "Semestral -5% aplicado"}
@@ -186,9 +189,9 @@ const Landing = () => {
 
             <button
               onClick={() => setShowModalidadeModal(true)}
-              className="text-[#1E40FF] underline hover:text-blue-700 transition-colors"
+              className="text-gray-700 underline hover:text-gray-900 transition-colors"
             >
-              Quero ver outro prazo
+              Ver outros prazos
             </button>
           </div>
         </div>
@@ -197,75 +200,73 @@ const Landing = () => {
       {/* Section 4: ROI */}
       <section 
         ref={(el) => (sectionsRef.current[3] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-16 transition-all duration-600 ease-out"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-lg w-full">
-          <h2 className="text-3xl font-bold text-[#1E40FF] text-center mb-8">
-            E quanto volta para o seu bolso
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            O retorno do seu investimento
           </h2>
           
-          {/* Painel que desliza */}
-          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 mb-6 animate-slide-in-right">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
             <div className="text-center">
-              <p className="text-green-700 font-bold text-lg mb-2">+15 p.p. na Inbox</p>
-              <p className="text-3xl font-bold text-green-600">+{formatNumber(extraInbox)}M</p>
-              <p className="text-sm text-gray-600">e-mails extras entregues</p>
+              <p className="text-green-800 font-semibold text-lg mb-2">+{formatNumber(extraInbox)}M e-mails extras</p>
+              <p className="text-sm text-gray-600">chegando na inbox (+15 p.p.)</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-2">
-                Mude o valor por clique e veja o ROI reagir:
+              <label className="block text-sm text-gray-700 mb-2 font-medium">
+                Valor por clique (ajuste conforme seu negócio):
               </label>
-              <div className="flex items-center">
+              <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2">
                 <span className="text-lg mr-2">$</span>
                 <input
                   type="number"
                   step="0.01"
                   value={cpc}
                   onChange={(e) => setCpc(Number(e.target.value))}
-                  className="border-2 border-[#1E40FF] rounded-lg px-3 py-2 flex-1 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 text-lg font-semibold outline-none"
                 />
               </div>
             </div>
 
-            <div className="text-center bg-[#EEF2FF] rounded-xl p-4">
+            <div className="text-center bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-2">Receita extra mensal:</p>
               <p className="text-3xl font-bold text-green-600">{formatCurrency(receitaExtra)}</p>
             </div>
 
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">ROI:</p>
-              <p className="text-5xl font-bold text-[#1E40FF]">{roi.toFixed(1)}x</p>
+              <p className="text-5xl font-bold text-gray-900">{roi.toFixed(1)}x</p>
+              <p className="text-sm text-gray-500 mt-2">O investimento se paga sozinho</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 5: Escudo de Risco Zero */}
+      {/* Section 5: Sem Risco */}
       <section 
         ref={(el) => (sectionsRef.current[4] = el)}
-        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-16 transition-all duration-600 ease-out pb-24"
+        className="min-h-screen flex flex-col justify-center items-center px-6 opacity-0 translate-y-8 transition-all duration-700 ease-out pb-24"
       >
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 max-w-lg w-full">
-          <h2 className="text-3xl font-bold text-[#1E40FF] text-center mb-8">
-            Escudo de risco zero
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 max-w-lg w-full">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
+            Sem risco. Sem desperdício.
           </h2>
           
-          {/* Accordions */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-3 mb-8">
             <div className="border border-gray-200 rounded-lg">
               <button
                 onClick={() => toggleAccordion('credito')}
                 className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="font-semibold text-gray-800">Pague e não usou? Vira crédito.</span>
+                <span className="font-semibold text-gray-800">Não usou? Vira crédito válido por 9 meses</span>
                 <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'credito' ? 'rotate-180' : ''}`} />
               </button>
               {expandedAccordion === 'credito' && (
-                <div className="p-4 pt-0 text-gray-600">
-                  Disparou menos que o piso? Todo valor vira crédito válido por 9 meses. Sem desperdício, sem surpresa.
+                <div className="p-4 pt-0 text-gray-600 border-t border-gray-100">
+                  Disparou menos que o piso? Todo valor vira crédito. Zero desperdício.
                 </div>
               )}
             </div>
@@ -275,32 +276,32 @@ const Landing = () => {
                 onClick={() => toggleAccordion('kickstart')}
                 className="w-full flex justify-between items-center p-4 text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="font-semibold text-gray-800">Kick-start: nossa equipe aquece seu IP</span>
+                <span className="font-semibold text-gray-800">Nossa equipe prepara seu IP para alta performance</span>
                 <ChevronDown className={`w-5 h-5 transition-transform ${expandedAccordion === 'kickstart' ? 'rotate-180' : ''}`} />
               </button>
               {expandedAccordion === 'kickstart' && (
-                <div className="p-4 pt-0 text-gray-600">
-                  Configuramos seu DNS, aquecemos com 50k envios e entregamos seu IP pronto para alta performance.
+                <div className="p-4 pt-0 text-gray-600 border-t border-gray-100">
+                  Configuramos DNS, aquecemos com 50k envios. Seu IP chega pronto para entregar.
                 </div>
               )}
             </div>
           </div>
 
-          <p className="text-center text-gray-600 text-lg">
-            <span className="text-[#1E40FF] font-bold">Sem surpresas, sem desperdício.</span>
+          <p className="text-center text-gray-600">
+            <span className="font-semibold text-gray-900">Zero surpresas. Zero desperdício.</span>
           </p>
         </div>
       </section>
 
-      {/* CTA Fixo no Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-[#1E40FF] p-4 shadow-lg z-50">
+      {/* CTA Fixo */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
         <div className="container mx-auto max-w-lg">
           <button
             onClick={() => window.open('https://everinbox.com.br/contato', '_blank')}
-            className="w-full bg-[#1E40FF] text-white py-4 rounded-xl text-lg font-bold hover:bg-blue-700 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+            className="w-full bg-gray-900 text-white py-4 rounded-lg text-lg font-semibold hover:bg-gray-800 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
           >
             <ExternalLink className="w-5 h-5" />
-            Quero meu IP dedicado por {formatCurrency(total)}/mês
+            Preciso do meu IP dedicado · {formatCurrency(total)}/mês
           </button>
         </div>
       </div>
@@ -308,8 +309,8 @@ const Landing = () => {
       {/* Modal de Modalidade */}
       {showModalidadeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h3 className="text-2xl font-bold text-[#1E40FF] mb-6 text-center">Escolha seu prazo</h3>
+          <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Escolha seu prazo</h3>
             
             <div className="space-y-3">
               {[
@@ -324,7 +325,7 @@ const Landing = () => {
                     value={option.value}
                     checked={modalidade === option.value}
                     onChange={(e) => setModalidade(e.target.value)}
-                    className="mr-3 text-[#1E40FF]"
+                    className="mr-3"
                   />
                   <div>
                     <span className="font-semibold text-gray-800">{option.label}</span>
@@ -334,14 +335,12 @@ const Landing = () => {
               ))}
             </div>
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowModalidadeModal(false)}
-                className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Fechar
-              </button>
-            </div>
+            <button
+              onClick={() => setShowModalidadeModal(false)}
+              className="w-full mt-6 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Fechar
+            </button>
           </div>
         </div>
       )}
@@ -349,37 +348,22 @@ const Landing = () => {
       <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
-          height: 24px;
-          width: 24px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
-          background: #1E40FF;
+          background: #374151;
           cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .slider::-moz-range-thumb {
-          height: 24px;
-          width: 24px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
-          background: #1E40FF;
+          background: #374151;
           cursor: pointer;
           border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        @keyframes slide-in-right {
-          from {
-            transform: translateY(30px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slide-in-right 0.6s ease-out;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
       `}</style>
     </div>
