@@ -29,7 +29,7 @@ const FinalSection: React.FC<FinalSectionProps> = ({ sectionsRef }) => {
           
           <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg">
             <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">$</div>
-            <span className="text-gray-800">ROI positivo já no primeiro mês</span>
+            <span className="text-gray-800">Você dono do seu próprio IP</span>
           </div>
         </div>
 
